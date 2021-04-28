@@ -56,7 +56,7 @@ public class PoliticalAlignment {
             aboutYou[3] = "hs";
             aboutYou[4] = "100000";
             Politics person = new Politics(aboutYou);
-            String party = person.FindParty();
+            person.FindParty();
         }
         else {
             if (aboutYou[0].toLowerCase().contains("native american")) {
@@ -66,21 +66,26 @@ public class PoliticalAlignment {
             aboutYou[1] = String.valueOf(sc.nextInt());
             System.out.print("What is your gender (male, female, other)? ");
             aboutYou[2] = sc.next().toLowerCase();
-            System.out.print("What is your level of education (MS, HS, College or Bachelor)? ");
-            aboutYou[3] = sc.next().toLowerCase();
-            System.out.print("What is your salary? ");
-            aboutYou[4] = String.valueOf(sc.nextInt());
-            //the chances of someone of other genders being republican is so low that it isn't even worth going through all the other stuff
-            if (aboutYou[2].toLowerCase().contains("other")) {
-                System.out.println("I guess that you are a democrat. Is this Correct?");
-                if (sc.next().contains("y") || sc.next().contains("y")) {
-
-                }
+            System.out.print("Do you have a college degree? ");
+            if (sc.next().toLowerCase().contains("y")) {
+                aboutYou[3] = "college";
             }
             else {
-                Politics person = new Politics(aboutYou);
-                String party = person.FindParty();
+                aboutYou[3] = "no_college";
             }
+            System.out.print("What is your salary (under 50k, between 50k-99k, over 100k)? ");
+            aboutYou[4] = sc.next();
+            //the chances of someone of other genders being republican is so low that it isn't even worth going through all the other stuff
+           // if (aboutYou[2].toLowerCase().contains("other")) {
+                //System.out.println("I guess that you are a democrat. Is this Correct?");
+               // if (sc.next().contains("y") || sc.next().contains("y")) {
+
+               // }
+            //}
+            //else {
+                Politics person = new Politics(aboutYou);
+                person.FindParty();
+            //}
         }
 
         

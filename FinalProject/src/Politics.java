@@ -26,8 +26,9 @@ public class Politics {
     public Path path1 = path.toAbsolutePath();
     public Path path2 = path1.getParent();
     public File file = new File(path2 + "\\src\\politicians.txt");
-    public String name, party, support1, support2, support3, against1, against2, against3, ethnicity, gender, education;
-    public int age, salary;
+    public String name, party, support1, support2, support3, against1, against2, against3, ethnicity, gender, education, salary;
+    public int age;
+    public static final Scanner sc = new Scanner(System.in);
     
     
     
@@ -48,17 +49,20 @@ public class Politics {
         age = Integer.parseInt(aboutYou[1]);
         gender = aboutYou[2];
         education = aboutYou[3];
-        salary = Integer.parseInt(aboutYou[4]);
+        salary = aboutYou[4];
         
     }
 
 
-    public String FindParty() throws Exception, FileNotFoundException, IOException, UnassignedClassException {
+    public void FindParty() throws Exception, FileNotFoundException, IOException, UnassignedClassException {
         FileWriter csvWriter = new FileWriter(path2 + "\\src\\testingdata.csv", false);
+        FileWriter csvWriter2 = new FileWriter(path2 + "\\src\\trainingdata.csv", true);
         csvWriter.write("@RELATION testingdata\n\n@ATTRIBUTE ethnicity {white,black,asian,hispanic,native_american}\n@ATTRIBUTE age NUMERIC\n@ATTRIBUTE gender {male,female,other}\n");
-        csvWriter.write("@ATTRIBUTE education {ms, hs, college, bachelor}\n@ATTRIBUTE salary NUMERIC\n@ATTRIBUTE party {dem,rep}\n\n");
-        csvWriter.write("@DATA\n"+ ethnicity + "," + age + "," + gender + "," + education + "," + salary + ",dem");
+        csvWriter.write("@ATTRIBUTE education {college,no_college}\n@ATTRIBUTE salary {under,between,over}\n@ATTRIBUTE party {dem,rep}\n\n");
+        String data = ethnicity + "," + age + "," + gender + "," + education + "," + salary;
+        csvWriter.write("@DATA\n"+ data + ",rep");
         csvWriter.close();
+        String answ;
         BufferedReader testReader = new BufferedReader(new FileReader(path2 + "\\src\\testingdata.csv"));
         BufferedReader trainReader = new BufferedReader(new FileReader(path2 + "\\src\\politicaldata.csv"));
         Instances train = new Instances(trainReader);
@@ -72,8 +76,27 @@ public class Politics {
         //eval.crossValidateModel(cls, train, 6, new Random(1));
         test.setClassIndex(5);
         eval.evaluateModel(cls, test);
-        System.out.println(eval.toSummaryString("\nResults\n======\n", false));   
-        return eval.toSummaryString();
+        if (eval.correct() == 1) {
+            System.out.println("I guess that you are a republican. Am I correct?");
+            if (sc.next().contains("y") || sc.next().contains("Y")) {
+                csvWriter2.write(data + ",rep");
+            }
+            else {
+                System.out.println("Well that's too bad.");
+            }
+        }
+        if (eval.correct() == 0) {
+            System.out.println("I guess that you are a democrat. Am I correct?");
+            if (sc.next().contains("y") || sc.next().contains("Y")) {
+                csvWriter2.write(data + ",dem");
+            }
+            else {
+                System.out.println("Well that's too bad.");
+            }
+        }
+
+        //System.out.println(eval.toSummaryString());
+       // return eval.toSummaryString();
     }
 
     public String FindPolitican(String name) {
