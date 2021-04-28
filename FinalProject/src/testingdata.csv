@@ -1,0 +1,11 @@
+@RELATION testingdata
+
+@ATTRIBUTE ethnicity {white,black,asian,hispanic,native_american}
+@ATTRIBUTE age NUMERIC
+@ATTRIBUTE gender {male,female,other}
+@ATTRIBUTE education {ms, hs, college, bachelor}
+@ATTRIBUTE salary NUMERIC
+@ATTRIBUTE party {dem,rep}
+
+@DATA
+white,70,male,hs,100000,dem
