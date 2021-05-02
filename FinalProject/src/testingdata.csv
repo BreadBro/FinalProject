@@ -1,11 +1,11 @@
 @RELATION testingdata
 
-@ATTRIBUTE ethnicity {white,black,asian,hispanic,native_american,biracial}
+@ATTRIBUTE ethnicity {white,black,asian,hispanic,native_american}
 @ATTRIBUTE age NUMERIC
 @ATTRIBUTE gender {male,female,other}
-@ATTRIBUTE education {ms, hs, college, bachelor}
-@ATTRIBUTE salary NUMERIC
+@ATTRIBUTE education {college,nocollege}
+@ATTRIBUTE salary {under,between,over}
 @ATTRIBUTE party {dem,rep}
 
 @DATA
-asian,43,male,college,150000,rep
+asian,43,male,nocollege,over,rep

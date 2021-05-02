@@ -1,0 +1,10 @@
+=Joe Biden=78=_president=6 feet=176 pounds=male=democratic=
+=Bernie Sanders=81=senator of Vermont=6 feet=176 pounds=male=democratic=
+=Alexandria Ocasio-Cortez=30=senator of New York=5 feet and 6 inches=143 pounds=female=democratic=
+=Matt Gaetz=37=congressman of Florida=5 feet and 7 inches=160 pounds=male=republican=
+=Mitch McConnell=79=senator of Kentucky=5 feet and 10 inches=154 pounds=male=republican=
+=Greg Abbott=63=governor of Texas=5 feet and 8 inches=154 pounds=male=republican=
+=Andrew Cuomo=62=governor of New York=5 feet and 11 inches=176 pounds=male=democratic=
+=Donald Trump=74=former president=6 feet and 3 inches=243 pounds=male=republican=
+=Marjorie Greene=46=congresswoman of Georgia=5 feet and 3 inches=138 pounds=female=republican=
+=Lori Lightfoot=58=mayor of Chicago=5 feet and 1 inch=119 pounds=female=democratic=

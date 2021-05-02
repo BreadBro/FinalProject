@@ -3,45 +3,23 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.io.FileWriter;
 import java.util.*;
-import java.io.InputStreamReader;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import weka.classifiers.Classifier;
-import weka.classifiers.Evaluation;
+import weka.classifiers.*;
 import weka.core.*;
-import weka.core.converters.ArffLoader;
-import weka.core.converters.ConverterUtils.*;
-import weka.filters.supervised.instance.Resample;
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.meta.FilteredClassifier;
-import weka.classifiers.trees.J48;
-import weka.clusterers.FilteredClusterer;
-import weka.gui.explorer.*;
 import weka.classifiers.trees.J48;
 public class Politics {
 
     //variables
-    public Path path = Paths.get("PoliticalAlignment.java");
-    public Path path1 = path.toAbsolutePath();
-    public Path path2 = path1.getParent();
-    public File file = new File(path2 + "\\src\\politicians.txt");
+    public Path path = Paths.get("PoliticalAlignment.java").toAbsolutePath().getParent();
     public String name, party, support1, support2, support3, against1, against2, against3, ethnicity, gender, education, salary;
     public int age;
     public static final Scanner sc = new Scanner(System.in);
     
     
     
-    //constructor
-    public Politics(String aName, String aParty, String aSupport1, String aSupport2, String aSupport3, String aAgainst1, String aAgainst2, String aAgainst3) {
-        name = aName;
-        party = aParty;
-        support1 = aSupport1;
-        support2 = aSupport2;
-        support3 = aSupport3;
-        against1 = aAgainst1;
-        against2 = aAgainst2;
-        against3 = aAgainst3;
+    //constructors
+    public Politics() {
+        name = "unknown";
     }
 
     public Politics(String[] aboutYou) {
@@ -53,55 +31,121 @@ public class Politics {
         
     }
 
-
     public void FindParty() throws Exception, FileNotFoundException, IOException, UnassignedClassException {
-        FileWriter csvWriter = new FileWriter(path2 + "\\src\\testingdata.csv", false);
-        FileWriter csvWriter2 = new FileWriter(path2 + "\\src\\trainingdata.csv", true);
+        //printstream but better, false means it overwrites, true means it appends
+        FileWriter csvWriter = new FileWriter(path + "\\src\\testingdata.csv", false);
+        FileWriter csvWriter2 = new FileWriter(path + "\\src\\trainingdata.csv", true);
+        //adds attributes and title to the test data, this has to overwrite because otherwise I would not be able to remove the data line easily
         csvWriter.write("@RELATION testingdata\n\n@ATTRIBUTE ethnicity {white,black,asian,hispanic,native_american}\n@ATTRIBUTE age NUMERIC\n@ATTRIBUTE gender {male,female,other}\n");
-        csvWriter.write("@ATTRIBUTE education {college,no_college}\n@ATTRIBUTE salary {under,between,over}\n@ATTRIBUTE party {dem,rep}\n\n");
+        csvWriter.write("@ATTRIBUTE education {college,nocollege}\n@ATTRIBUTE salary {under,between,over}\n@ATTRIBUTE party {dem,rep}\n\n");
         String data = ethnicity + "," + age + "," + gender + "," + education + "," + salary;
+        //adds data to file, says that the person is republican which helps me identify if it is true or false
         csvWriter.write("@DATA\n"+ data + ",rep");
         csvWriter.close();
-        String answ;
-        BufferedReader testReader = new BufferedReader(new FileReader(path2 + "\\src\\testingdata.csv"));
-        BufferedReader trainReader = new BufferedReader(new FileReader(path2 + "\\src\\politicaldata.csv"));
+        //how the library reads the files
+        BufferedReader testReader = new BufferedReader(new FileReader(path + "\\src\\testingdata.csv"));
+        BufferedReader trainReader = new BufferedReader(new FileReader(path + "\\src\\trainingdata.csv"));
         Instances train = new Instances(trainReader);
         Instances test = new Instances(testReader);
         Classifier cls = new J48();
+        //tells it that it has six attributes, 0-5
         train.setClassIndex(5);
+        //trains filter 
         cls.buildClassifier(train);
-        //NaiveBayes nb = new NaiveBayes();
-        //nb.buildClassifier(train);
         Evaluation eval = new Evaluation(train);
-        //eval.crossValidateModel(cls, train, 6, new Random(1));
         test.setClassIndex(5);
+        //compares the data
         eval.evaluateModel(cls, test);
+        //1 means that you are republican because that means the model got data that was the same as the data that was put into test
         if (eval.correct() == 1) {
-            System.out.println("I guess that you are a republican. Am I correct?");
-            if (sc.next().contains("y") || sc.next().contains("Y")) {
-                csvWriter2.write(data + ",rep");
+            System.out.print("\nI guess that you are a republican. Am I correct? ");
+            if (sc.next().toLowerCase().contains("y")) {
+                //privacy laws!
+                System.out.print("Good! Would you like your data to be added to my database? ");
+                if (sc.next().toLowerCase().contains("y")) {
+                    //adds the data
+                    csvWriter2.write("\n" + data + ",rep");
+                    csvWriter2.close();
+                }
             }
             else {
-                System.out.println("Well that's too bad.");
+                System.out.print("Would you still like your data to be added to my database? ");
+                if (sc.next().toLowerCase().contains("y")) {
+                    //adds the data
+                    csvWriter2.write("\n" + data + ",dem");
+                    csvWriter2.close();
+                }
             }
         }
+        //nothing here that I didn't already explain
         if (eval.correct() == 0) {
-            System.out.println("I guess that you are a democrat. Am I correct?");
-            if (sc.next().contains("y") || sc.next().contains("Y")) {
-                csvWriter2.write(data + ",dem");
+            System.out.print("\nI guess that you are a democrat. Am I correct? ");
+            if (sc.next().toLowerCase().contains("y")) {
+                System.out.print("Good! Would you like your data to be added to my database? ");
+                if (sc.next().toLowerCase().contains("y")) {
+                    csvWriter2.write("\n" + data + ",dem");
+                    csvWriter2.close();
+                }
+                else {
+                    System.out.println("Well that's too bad.");
+                }
             }
             else {
                 System.out.println("Well that's too bad.");
+                System.out.print("Would you still like your data to be added to my database? ");
+                if (sc.next().toLowerCase().contains("y")) {
+                    //adds the data
+                    csvWriter2.write("\n" + data + ",rep");
+                    csvWriter2.close();
+                }
             }
         }
-
-        //System.out.println(eval.toSummaryString());
-       // return eval.toSummaryString();
+        //bug testing!
+        System.out.println(eval.toSummaryString());
     }
 
-    public String FindPolitican(String name) {
-        return name;
+    public static String FindPolitican(String name) throws FileNotFoundException {
+        Path path = Paths.get("PoliticalAlignment.java").toAbsolutePath().getParent();
+        Scanner sc = new Scanner(new File(path + "\\src\\politicians.txt"));
+        String line;
+        //use this to check if they are in the database or not
+        String lineWithName = "__/";
+        while (sc.hasNextLine()) {
+            line = sc.nextLine();
+            if (line.contains(name)) {
+                lineWithName = line;
+            }
+        }
+        return lineWithName;    
     }
 
-
+    public static String toString(String lineWithName, String name) {
+        String tempSubstring;
+        int x = 1;
+        String[] data = new String[7];
+        String full;
+        for (x = 0; x < data.length; x++) {
+            //sets temp to relevant line
+            tempSubstring = lineWithName;
+            //changes the first = to a / so  I can get the index of a unique symbol
+            lineWithName = lineWithName.replaceFirst("=", "/");
+            //creates temp substring from the beginning to index of /
+            tempSubstring = lineWithName.substring(0, lineWithName.indexOf("/") + 1);
+            //gets rid of that first part
+            lineWithName = lineWithName.replaceAll(tempSubstring, "");
+            //sets a part of the array to whatever is before the equal
+            data[x] = lineWithName.substring(0, lineWithName.indexOf("="));
+        }
+        //these nouns use different articles, put president with a _ since there can also be former president
+        if (data[2].contains("_president") || data[2].toLowerCase().contains("mayor") || data[2].toLowerCase().contains("governor")) {
+            data[2] = data[2].replace("_", "");
+            //                    0                    2    0     1           5              4         3                       6
+            full = String.format("%s is the current %s. %s is a %s year old %s who weighs %s, is %s tall, and represents the %s party.", data[0], data[2], data[0], data[1], data[5], data[4], data[3], data[6]);
+            return full;
+        }
+        else {
+            full = String.format("%s is a US %s. %s is a %s year old %s who weighs %s, is %s tall, and represents the %s party.", data[0], data[2], data[0], data[1], data[5], data[4], data[3], data[6]);
+            return full;
+        }
+    }
 }
