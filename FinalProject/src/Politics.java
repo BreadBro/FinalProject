@@ -11,8 +11,9 @@ public class Politics {
 
     //variables
     public Path path = Paths.get("PoliticalAlignment.java").toAbsolutePath().getParent();
-    public String name, party, support1, support2, support3, against1, against2, against3, ethnicity, gender, education, salary;
-    public int age;
+    public String name, age, party, beliefs, ethnicity, gender, education, salary;
+    //short for opinion
+    public String[] op = new String[4];
     public static final Scanner sc = new Scanner(System.in);
     
     
@@ -24,11 +25,45 @@ public class Politics {
 
     public Politics(String[] aboutYou) {
         ethnicity = aboutYou[0];
-        age = Integer.parseInt(aboutYou[1]);
+        age = aboutYou[1];
         gender = aboutYou[2];
         education = aboutYou[3];
         salary = aboutYou[4];
-        
+    }
+
+    public Politics(String opinion1, String opinion2, String opinion3, String opinion4) {
+        op[0] = opinion1;
+        op[1] = opinion2;
+        op[2] = opinion3;
+        op[3] = opinion4;
+    }
+    
+    //assessors
+    public String getOp1() {
+        return op[0];
+    }
+    public String getOp2() {
+        return op[1];
+    }
+    public String getOp3() {
+        return op[2];
+    }
+    public String getOp4() {
+        return op[3];
+    }
+
+    //mutators
+    public void setOp1(String op1) {
+        op[0] = op1;
+    }
+    public void setOp2(String op2) {
+        op[1] = op2;
+    }
+    public void setOp3(String op3) {
+        op[2] = op3;
+    }
+    public void setOp4(String op4) {
+        op[3] = op4;
     }
 
     public void FindParty() throws Exception, FileNotFoundException, IOException, UnassignedClassException {
@@ -47,6 +82,7 @@ public class Politics {
         BufferedReader trainReader = new BufferedReader(new FileReader(path + "\\src\\trainingdata.csv"));
         Instances train = new Instances(trainReader);
         Instances test = new Instances(testReader);
+        //creates a filter that hasn't had data applied to it
         Classifier cls = new J48();
         //tells it that it has six attributes, 0-5
         train.setClassIndex(5);
@@ -83,6 +119,7 @@ public class Politics {
             if (sc.next().toLowerCase().contains("y")) {
                 System.out.print("Good! Would you like your data to be added to my database? ");
                 if (sc.next().toLowerCase().contains("y")) {
+                    //adds the data
                     csvWriter2.write("\n" + data + ",dem");
                     csvWriter2.close();
                 }
@@ -119,27 +156,25 @@ public class Politics {
         return lineWithName;    
     }
 
-    public static String toString(String lineWithName, String name) {
-        String tempSubstring;
-        int x = 1;
+    public static String toString(String lineWithName) {
+        String tempSubstring, full;
         String[] data = new String[7];
-        String full;
-        for (x = 0; x < data.length; x++) {
+        for (int x = 0; x < data.length; x++) {
             //sets temp to relevant line
             tempSubstring = lineWithName;
             //changes the first = to a / so  I can get the index of a unique symbol
-            lineWithName = lineWithName.replaceFirst("=", "/");
+            lineWithName = lineWithName.replaceFirst("|", "=");
             //creates temp substring from the beginning to index of /
-            tempSubstring = lineWithName.substring(0, lineWithName.indexOf("/") + 1);
+            tempSubstring = lineWithName.substring(0, lineWithName.indexOf("=") + 1);
             //gets rid of that first part
             lineWithName = lineWithName.replaceAll(tempSubstring, "");
             //sets a part of the array to whatever is before the equal
-            data[x] = lineWithName.substring(0, lineWithName.indexOf("="));
+            data[x] = tempSubstring.replaceAll("=", "");
         }
         //these nouns use different articles, put president with a _ since there can also be former president
         if (data[2].contains("_president") || data[2].toLowerCase().contains("mayor") || data[2].toLowerCase().contains("governor")) {
             data[2] = data[2].replace("_", "");
-            //                    0                    2    0     1           5              4         3                       6
+            //                    0                  2   0      1           5              4         3                       6
             full = String.format("%s is the current %s. %s is a %s year old %s who weighs %s, is %s tall, and represents the %s party.", data[0], data[2], data[0], data[1], data[5], data[4], data[3], data[6]);
             return full;
         }
@@ -147,5 +182,27 @@ public class Politics {
             full = String.format("%s is a US %s. %s is a %s year old %s who weighs %s, is %s tall, and represents the %s party.", data[0], data[2], data[0], data[1], data[5], data[4], data[3], data[6]);
             return full;
         }
+    }
+    
+    public String Ideal() throws FileNotFoundException {
+        Scanner sc = new Scanner(new File(path + "\\src\\politicians.txt"));
+        String line;
+        //use this to check if they are in the database or not
+        String beliefs = "" + op[0] + op[1] + op[2] + op[3];
+        String lineWithName = "__/";
+        while (sc.hasNextLine()) {
+            line = sc.nextLine();
+            if (line.contains(beliefs)) {
+                lineWithName = line;
+            }
+        }
+        if (lineWithName.contains("__/")) {
+            return lineWithName;
+        }
+        else {
+            lineWithName = lineWithName.substring(0, lineWithName.indexOf("|"));
+            return lineWithName;
+        }
+        
     }
 }

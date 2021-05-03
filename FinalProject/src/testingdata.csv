@@ -8,4 +8,4 @@
 @ATTRIBUTE party {dem,rep}
 
 @DATA
-asian,43,male,nocollege,over,rep
+white,45,male,nocollege,between,rep

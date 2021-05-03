@@ -12,11 +12,11 @@ white,26,other,college,between,dem
 white,19,male,nocollege,under,rep
 white,26,male,college,over,rep
 white,28,male,college,between,dem
-white,22,male,college,between,dem
+white,22,male,nocollege,between,dem
 white,24,female,nocollege,between,rep
 white,29,female,college,over,dem
 white,25,female,nocollege,under,rep
-white,18,female,college,under,dem
+white,18,female,nocollege,under,dem
 white,43,male,nocollege,under,rep
 white,42,male,nocollege,between,rep
 white,44,male,college,between,rep
@@ -111,3 +111,5 @@ native_american,65,female,nocollege,under,dem
 native_american,14,male,nocollege,between,dem
 white,15,male,nocollege,over,dem
 black,15,male,nocollege,over,dem
+white,78,male,college,over,dem
+white,15,male,nocollege,over,dem
