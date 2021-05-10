@@ -1,20 +1,22 @@
 import java.util.*;
 import weka.core.UnassignedClassException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.io.*;
-import java.io.FileWriter;
+import java.security.NoSuchAlgorithmException;
 public class PoliticalAlignment {
     public static void main(String [] args) throws Exception, FileNotFoundException, IOException, UnassignedClassException {
         menu();
     }
     public static Scanner sc = new Scanner(System.in);
-    public static void menu() throws Exception, FileNotFoundException, IOException, UnassignedClassException {
+    public static void menu() throws Exception, FileNotFoundException, IOException, UnassignedClassException, NoSuchAlgorithmException {
         int x = 1;
         int answ = 0;
         //basic while loop menu
         System.out.println("This program will find out your political affiliations. Where would you like to begin? You can find information on an American politican, ");
         System.out.println("find what party you fit into, and find what politicians fit your beliefs.");
         System.out.println("After every action, you will automatically be returned to the menu. If you want to exit, type 4 into the menu.");
+        System.out.println("(Disclaimer: If you see any warnings, please ignore them)");
         while (x == 1) {     
             try {
                 Thread.sleep(1000);
@@ -25,7 +27,8 @@ public class PoliticalAlignment {
             System.out.println("\n1. Find Info on Politican");
             System.out.println("2. Find the Party that you fit into");
             System.out.println("3. Find a Politician who aligns with your ideals");
-            System.out.println("4. Exit");
+            System.out.println("4. View Data");
+            System.out.println("5. Exit");
             answ = 0;
             answ = sc.nextInt();
             if (answ == 1) {
@@ -43,6 +46,10 @@ public class PoliticalAlignment {
             }
 
             if (answ == 4) {
+                ViewData();
+            }
+            
+            if (answ == 5) {
                 System.exit(1);
             }
         }
@@ -106,6 +113,7 @@ public class PoliticalAlignment {
             else if (income.contains("between")) {
                 aboutYou[4] = "between";
             }
+            System.out.println();
             Politics person = new Politics(aboutYou);
             person.FindParty();
         }
@@ -175,7 +183,7 @@ public class PoliticalAlignment {
         String answ, changeTo;
         int checkAndChange;
         int x = 1;
-        questionsAndAnswers[0] = "Does the politician support abortion (yes or no)? ";
+        questionsAndAnswers[0] = "Does you support abortion (yes or no)? ";
         questionsAndAnswers[1] = "Do you support taxing rich corporations (yes or no)? ";
         questionsAndAnswers[2] = "Do you believe that global warming is a serious issue (yes or no)? ";
         questionsAndAnswers[3] = "Do you believe that mask wearing should be mandatory (yes or no)? ";
@@ -269,5 +277,59 @@ public class PoliticalAlignment {
                 FindPolitican(name);
             }
         }
+    }
+
+    public static void ViewData() throws NoSuchAlgorithmException, FileNotFoundException, IOException {
+        Path path = Paths.get("PoliticalAlignment.java").toAbsolutePath().getParent();
+        BufferedReader breader = new BufferedReader(new FileReader(path + "\\src\\password.txt"));
+        Scanner fileSC = new Scanner(new File(path + "\\src\\trainingdata.csv"), "UTF-8");
+        String password = breader.readLine();
+        breader.close();
+        password = password.replaceAll(".txt", "");
+        String inputPassword, tempSubstring, dataLine;
+        String[] data = new String[6];
+        int count = 3;
+        while (count > 0) {
+            System.out.printf("You have %d attempts remaining.%n", count);
+            System.out.print("Please enter your admin password: ");
+            inputPassword = sc.next(); 
+            if (password.contentEquals(inputPassword)) {
+                System.out.println("Access Granted.");
+                try {
+                    Thread.sleep(400);
+                }
+                catch (Exception E) {
+                    System.out.println("no");
+                }
+                while (fileSC.hasNextLine()) {
+                    dataLine = fileSC.nextLine();
+                    if (dataLine.contains(",") && !dataLine.contains("{")) {
+                        for (int x = 0; x < data.length; x++) {
+                            //sets temp to relevant line
+                            tempSubstring = dataLine;
+                            //changes the first = to a / so  I can get the index of a unique symbol
+                            dataLine = dataLine.replaceFirst(",", "=");
+                            //creates temp substring from the beginning to index of /
+                            tempSubstring = dataLine.substring(0, dataLine.indexOf("=") + 1);
+                            //gets rid of that first part
+                            dataLine = dataLine.replaceAll(tempSubstring, "");
+                            //sets a part of the array to whatever is before the equal
+                            data[x] = tempSubstring.replaceAll("=", "");
+                            if (x == 4) {
+                                data[5] = dataLine;
+                                x = 7;
+                            }
+                        }
+                        System.out.printf("%s, %s, %s, %s, %s, %s%n", data[0], data[1], data[2], data[3], data[4], data[5]);
+                    }
+                    else {
+                        System.out.println("a");
+                    }
+                }
+                count = 0;
+            }
+            count--;
+        }
+        fileSC.close();
     }
 }

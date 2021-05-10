@@ -22,7 +22,6 @@ public class Politics {
     public Politics() {
         name = "unknown";
     }
-
     public Politics(String[] aboutYou) {
         ethnicity = aboutYou[0];
         age = aboutYou[1];
@@ -30,7 +29,6 @@ public class Politics {
         education = aboutYou[3];
         salary = aboutYou[4];
     }
-
     public Politics(String opinion1, String opinion2, String opinion3, String opinion4) {
         op[0] = opinion1;
         op[1] = opinion2;
