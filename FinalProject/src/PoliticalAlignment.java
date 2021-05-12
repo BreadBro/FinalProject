@@ -1,6 +1,5 @@
 import java.util.*;
 import weka.core.UnassignedClassException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
@@ -170,6 +169,7 @@ public class PoliticalAlignment {
                 System.out.println("Would you like to try again?");
                 if (!sc.next().toLowerCase().contains("y")) {
                     x = 2;
+                    writer.close();
                 }
             }
         }
@@ -312,9 +312,9 @@ public class PoliticalAlignment {
                             //creates temp substring from the beginning to index of /
                             tempSubstring = dataLine.substring(0, dataLine.indexOf("=") + 1);
                             //gets rid of that first part
-                            dataLine = dataLine.replaceAll(tempSubstring, "");
+                            dataLine = dataLine.replace(tempSubstring, "");
                             //sets a part of the array to whatever is before the equal
-                            data[x] = tempSubstring.replaceAll("=", "");
+                            data[x] = tempSubstring.replace("=", "");
                             if (x == 4) {
                                 data[5] = dataLine;
                                 x = 7;
