@@ -3,6 +3,7 @@ import weka.core.UnassignedClassException;
 import java.nio.file.*;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
+//If something doesnt work, clean java server workspace
 public class PoliticalAlignment {
     public static void main(String [] args) throws Exception, FileNotFoundException, IOException, UnassignedClassException {
         menu();
@@ -119,10 +120,10 @@ public class PoliticalAlignment {
     }
 
     public static void AddPolitician() throws IOException {
-        String full = "\n=";
         Path path = Paths.get("PoliticalAlignment.java").toAbsolutePath().getParent();
         FileWriter writer = new FileWriter(path + "\\src\\politicians.txt", true);
         int x = 1;
+        String full = "\n";
         String[] questions = new String[11];
         //use loops to be a bit more efficient
         questions[0] = "What is the first and last name of the politician? ";
@@ -138,10 +139,11 @@ public class PoliticalAlignment {
         questions[10] = "Do you believe that mask wearing should be mandatory (yes or no)? ";
         while (x == 1) {
             //adds data to file
-            full = "\n=";
+            //this is required for some reason otherwise it overlaps the questions
+            String temp = sc.nextLine();
             for (int i = 0; i < questions.length - 4; i++) {
                 System.out.print(questions[i]);
-                full = full + sc.nextLine() + "|";
+                full = full + sc.nextLine() + "/";
             }
             full = full + "<";
             //have to do a second loops cause the last 4 questions have different answers
@@ -153,6 +155,9 @@ public class PoliticalAlignment {
                 else {
                     full = full + "1";
                 }
+            }
+            if (full.contains("president")) {
+                full = full.replace("president", "_president");
             }
             full = full + ">";
             //checks if data looks right to user

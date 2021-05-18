@@ -3,6 +3,9 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.io.FileWriter;
 import java.util.*;
+
+import jdk.tools.jaotc.utils.NativeOrderOutputStream.PatchableInt;
+
 import java.io.*;
 import weka.classifiers.*;
 import weka.core.*;
@@ -162,7 +165,7 @@ public class Politics {
             //sets temp to relevant line
             tempSubstring = lineWithName;
             //changes the first = to a / so  I can get the index of a unique symbol
-            lineWithName = lineWithName.replaceFirst("|", "=");
+            lineWithName = lineWithName.replaceFirst("/", "=");
             //creates temp substring from the beginning to index of /
             tempSubstring = lineWithName.substring(0, lineWithName.indexOf("=") + 1);
             //gets rid of that first part
@@ -199,7 +202,7 @@ public class Politics {
             return lineWithName;
         }
         else {
-            lineWithName = lineWithName.substring(0, lineWithName.indexOf("|"));
+            lineWithName = lineWithName.substring(0, lineWithName.indexOf("/"));
             return lineWithName;
         }
         
