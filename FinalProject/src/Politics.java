@@ -7,6 +7,7 @@ import java.io.*;
 import weka.classifiers.*;
 import weka.core.*;
 import weka.classifiers.trees.J48;
+//website I got data from: https://www.nytimes.com/interactive/2020/11/03/us/elections/exit-polls-president.html
 public class Politics {
 
     //variables
